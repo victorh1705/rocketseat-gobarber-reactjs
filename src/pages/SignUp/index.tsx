@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
+import * as yup from 'yup';
 
 import { FiArrowLeft, FiLock, FiMail, FiUser } from 'react-icons/fi';
 
@@ -18,8 +19,14 @@ type FormData = {
 };
 
 const SignUp: React.FC = () => {
-  const methods = useForm();
-  const { register, handleSubmit, control } = methods;
+  const methods = useForm({
+    validationSchema: yup.object().shape({
+      name: yup.string().required(),
+      email: yup.string().email().required(),
+      password: yup.string().required(),
+    }),
+  });
+  const { register, handleSubmit, control, errors } = methods;
   const onSubmit = handleSubmit((data) => {
     console.log(data);
   });

@@ -7,7 +7,8 @@ import React, {
 import { IconBaseProps } from 'react-icons';
 
 import { useFormContext } from 'react-hook-form';
-import { Container } from './styles';
+import { FiAlertCircle } from 'react-icons/all';
+import { Container, Error } from './styles';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
@@ -29,7 +30,10 @@ const Input: React.FC<InputProps> = ({
   const [isFocused, setIsFocused] = useState(false);
   const [isFilled, setIsFilled] = useState(false);
 
-  const methods = useFormContext();
+  const {
+    errors,
+    formState: { dirtyFields },
+  } = useFormContext();
 
   const handleInputFocus = useCallback(() => {
     setIsFocused(true);
@@ -38,11 +42,15 @@ const Input: React.FC<InputProps> = ({
   const handleInputBlur = useCallback(() => {
     setIsFocused(false);
 
-    setIsFilled(methods.formState.dirtyFields.has(name));
+    setIsFilled(dirtyFields.has(name));
   }, []);
 
   return (
-    <Container isFocused={isFocused} isFilled={isFilled}>
+    <Container
+      isErrored={!!errors[name]}
+      isFocused={isFocused}
+      isFilled={isFilled}
+    >
       {Icon && <Icon size={20} />}
       <input
         name={name}
@@ -51,6 +59,11 @@ const Input: React.FC<InputProps> = ({
         {...rest}
         ref={register}
       />
+      {errors[name] && (
+        <Error title={errors[name]?.message}>
+          <FiAlertCircle color="#c53030" size={20} />
+        </Error>
+      )}
     </Container>
   );
 };
