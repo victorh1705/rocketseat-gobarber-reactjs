@@ -1,27 +1,37 @@
-import React from 'react';
-import { FiLogIn, FiMail, FiLock } from 'react-icons/fi';
+import React, { useCallback, useContext } from 'react';
+import { FiLock, FiLogIn, FiMail } from 'react-icons/fi';
 
 import { FormContext, useForm } from 'react-hook-form';
 import { DevTool } from 'react-hook-form-devtools';
 import * as yup from 'yup';
+import { sign } from 'crypto';
 import logoImg from '../../assets/logo.svg';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import { useAuth } from '../../hooks/AuthContext';
 
-import { Container, Content, Background } from './styles';
+import { Background, Container, Content } from './styles';
 
 const SignIn: React.FC = () => {
+  const { signIn } = useAuth();
+
   const methods = useForm({
     validationSchema: yup.object().shape({
       email: yup.string().email().required(),
       password: yup.string().required(),
     }),
   });
+
   const { register, handleSubmit, control } = methods;
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-  });
+
+  const onSubmit = useCallback(
+    handleSubmit((data) => {
+      const { password, email } = data;
+      signIn({ email, password });
+    }),
+    [signIn],
+  );
 
   return (
     <FormContext {...methods}>
