@@ -12,9 +12,11 @@ import Button from '../../components/Button';
 import { useAuth } from '../../hooks/AuthContext';
 
 import { Background, Container, Content } from './styles';
+import { useToast } from '../../hooks/ToastContext';
 
 const SignIn: React.FC = () => {
   const { signIn } = useAuth();
+  const { addToast } = useToast();
 
   const methods = useForm({
     validationSchema: yup.object().shape({
@@ -26,11 +28,21 @@ const SignIn: React.FC = () => {
   const { register, handleSubmit, control } = methods;
 
   const onSubmit = useCallback(
-    handleSubmit((data) => {
-      const { password, email } = data;
-      signIn({ email, password });
+    handleSubmit(async ({ email, password }) => {
+      try {
+        await signIn({ email, password });
+      } catch (e) {
+        if (e instanceof yup.ValidationError) {
+          console.error(e);
+        }
+        addToast({
+          type: 'error',
+          title: 'Erro na autenticação',
+          description: 'Ocorreu um erro ao fazer login',
+        });
+      }
     }),
-    [signIn],
+    [signIn, addToast],
   );
 
   return (
