@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { FiLock, FiLogIn, FiMail } from 'react-icons/fi';
 import { DevTool } from 'react-hook-form-devtools';
@@ -17,6 +17,7 @@ import { useToast } from '../../hooks/ToastContext';
 const SignIn: React.FC = () => {
   const { signIn } = useAuth();
   const { addToast } = useToast();
+  const history = useHistory();
 
   const methods = useForm({
     validationSchema: yup.object().shape({
@@ -31,6 +32,7 @@ const SignIn: React.FC = () => {
     handleSubmit(async ({ email, password }) => {
       try {
         await signIn({ email, password });
+        history.push('/dashboard');
       } catch (e) {
         if (e instanceof yup.ValidationError) {
           console.error(e);

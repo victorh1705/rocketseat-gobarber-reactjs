@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FormContext, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import * as yup from 'yup';
 
 import { FiArrowLeft, FiLock, FiMail, FiUser } from 'react-icons/fi';
 
 import { DevTool } from 'react-hook-form-devtools';
 
+import api from '../../services/api';
+
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
 import logoImg from '../../assets/logo.svg';
 import { Background, Container, Content, AnimationContainer } from './styles';
+import { useToast } from '../../hooks/ToastContext';
 
 type FormData = {
   name: string;
@@ -20,6 +23,9 @@ type FormData = {
 };
 
 const SignUp: React.FC = () => {
+  const { addToast } = useToast();
+  const history = useHistory();
+
   const methods = useForm({
     validationSchema: yup.object().shape({
       name: yup.string().required(),
@@ -27,10 +33,31 @@ const SignUp: React.FC = () => {
       password: yup.string().required(),
     }),
   });
-  const { register, handleSubmit, control, errors } = methods;
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
-  });
+
+  const { register, handleSubmit, control } = methods;
+
+  const onSubmit = useCallback(
+    handleSubmit(async (data) => {
+      try {
+        await api.post('/users', data);
+
+        addToast({
+          type: 'success',
+          title: 'Cadastro realizado!',
+          description: 'Você já pode fazer seu logon no GoBarber',
+        });
+
+        history.push('/');
+      } catch (e) {
+        addToast({
+          type: 'error',
+          title: 'Erro no Cadastro',
+          description: 'Erro no cadastro, tente novamente',
+        });
+      }
+    }),
+    [history, addToast],
+  );
 
   return (
     <FormContext {...methods}>
