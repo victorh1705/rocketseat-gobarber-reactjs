@@ -20,6 +20,7 @@
     "eslint-plugin-react-hooks": "^2.5.0",
     "polished": "^3.6.3",
     "react": "^16.13.1",
+    "react-day-picker": "^7.4.8",
     "react-dom": "^16.13.1",
     "react-hook-form": "^5.7.2",
     "react-icons": "^3.10.0",
