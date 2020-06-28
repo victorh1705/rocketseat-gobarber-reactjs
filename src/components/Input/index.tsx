@@ -18,12 +18,14 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     | RefObject<HTMLInputElement>
     | null
     | undefined;
+  containerStyle?: object;
   icon?: React.ComponentType<IconBaseProps>;
 }
 
 const Input: React.FC<InputProps> = ({
   icon: Icon,
   name,
+  containerStyle,
   register,
   ...rest
 }) => {
@@ -47,6 +49,7 @@ const Input: React.FC<InputProps> = ({
 
   return (
     <Container
+      style={containerStyle}
       isErrored={!!errors[name]}
       isFocused={isFocused}
       isFilled={isFilled}

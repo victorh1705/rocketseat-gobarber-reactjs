@@ -6,6 +6,7 @@ import DayPicker, { DayModifiers } from 'react-day-picker';
 import 'react-day-picker/lib/style.css';
 
 import { parseISO } from 'date-fns/fp';
+import { Link } from 'react-router-dom';
 import {
   Container,
   Header,
@@ -141,13 +142,12 @@ const Dashboard = () => {
           <img src={logoImg} alt="GoBarber" />
 
           <Profile>
-            <img
-              src="https://avatars2.githubusercontent.com/u/6753782?s=460&v=4"
-              alt={user.name}
-            />
+            <img src={user.avatar_url} alt={user.name} />
             <div>
               <span>Bem-vindo,</span>
-              <strong>{user.name}</strong>
+              <Link to="/profile">
+                <strong>{user.name}</strong>
+              </Link>
             </div>
           </Profile>
 
